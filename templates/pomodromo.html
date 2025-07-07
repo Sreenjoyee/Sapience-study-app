@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googSleapis.com/css2?family=Sue+Ellen+Francisco&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>POMODROMO</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <p class="pomodromo-header">POMODROMO</p>
+    <div class="box pomodromo-box">
+        <div class="outer-circle">
+            <div class="inner-circle">
+                <input id="workTime" class="time-input" value="25:00" />
+            </div>
+        </div>
+        <div class="outer-circle">
+            <div class="inner-circle">
+                <input id="breakTime" class="time-input" value="5:00" />
+            </div>
+        </div>
+    </div>
+    <div class="pomodromo-btn">
+        <button class="start-btn" id="startBtn">START</button>
+        <button class="reset-btn" id="resetBtn">RESET</button>
+        <button class="pause-btn" id="pauseBtn">PAUSE</button>
+
+    </div>
+    <script>
+    let timer = null;
+    let isRunning = false;
+    let isWork = true;
+    let currentTime = 0;
+
+    const startBtn = document.getElementById("startBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const workInput = document.getElementById("workTime");
+    const breakInput = document.getElementById("breakTime");
+
+    function parseTime(str) {
+      const [m, s] = str.split(":").map(Number);
+      return m * 60 + (s || 0);
+    }
+
+    function formatTime(seconds) {
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function updateDisplay() {
+      const input = isWork ? workInput : breakInput;
+      input.value = formatTime(currentTime);
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => {
+        currentTime--;
+        updateDisplay();
+
+        if (currentTime <= 0) {
+          clearInterval(timer);
+          isRunning = false;
+
+          if (isWork) {
+            isWork = false;
+            currentTime = parseTime(breakInput.value);
+            updateDisplay();
+            startTimer(); 
+          }
+        }
+      }, 1000);
+      isRunning = true;
+    }
+
+    startBtn.addEventListener("click", () => {
+      clearInterval(timer);
+      isWork = true;
+      currentTime = parseTime(workInput.value);
+      updateDisplay();
+      startTimer();
+      pauseBtn.textContent = "PAUSE";
+    });
+
+    pauseBtn.addEventListener("click", () => {
+      if (isRunning) {
+        clearInterval(timer);
+        isRunning = false;
+        pauseBtn.textContent = "RESTART";
+      } else {
+        startTimer();
+        pauseBtn.textContent = "PAUSE";
+      }
+    });
+
+    resetBtn.addEventListener("click", () => {
+    clearInterval(timer);
+    isRunning = false;
+    pauseBtn.textContent = "PAUSE";
+
+    
+    workInput.value = "25:00";
+    breakInput.value = "5:00";
+    isWork = true;
+    currentTime = parseTime(workInput.value);
+    updateDisplay();
+    });
+  </script>
+</body>
+</html>
