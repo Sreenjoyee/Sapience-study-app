@@ -1,0 +1,573 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background-color: #a23ddc;
+  font-family: "Sue Ellen Francisco", cursive;
+  font-size: 20px;
+  text-transform: uppercase;
+  height: 100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+
+}
+
+.box{
+  border-radius: 30px 30px 30px 30px;
+  border: 2px solid black;
+  background: #d8a4f6FF;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  
+}
+
+.calendar-box{
+  width: 965px;
+  height: 667px;
+}
+
+.resource-hub-box, .to-do-box,.calendar-box-task{
+  width: 900px;
+  height: 735px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.calendar-todo{
+  display:flex;
+  flex-direction:row;
+}
+
+.day{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin: 20px 20px 20px 20px;
+}
+
+.day-task label,.day label{
+  border: 1px solid black;
+  background: #f6a4f3FF;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-shadow: 4px 4px 3px #00000033;
+}
+
+.day label{
+  display: block;
+  width: 97px;
+  height: 34px;
+  border-radius: 15px 15px 0px 0px;
+  cursor: pointer;
+}
+
+.resource-link,.resource-title,.day input,.day-task textarea{
+  border: 1px solid black;
+  background: white;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  font-family: "Sue Ellen Francisco", cursive;
+  text-shadow: 4px 4px 3px #00000033;
+  font-size: 18px;
+  padding: 2px 2px 2px 2px;
+}
+
+.day input{
+  width: 97px;
+  height: 34px;
+  border-radius:0px 0px 15px 15px ;
+  cursor: pointer;
+}
+
+
+.day-task label{
+  width: 648px;
+  height: 74px;
+  border-radius: 30px 30px 0px 0px;
+}
+
+.day:hover{
+  transform: scale(1.05);
+}
+
+.resource-link,.day-task textarea{
+  width: 648px;
+  height: 450px;
+  border-radius:0px 0px 30px 30px ;
+  resize: none;
+  overflow: auto;
+}
+
+.start-btn,.pause-btn,.reset-btn,.pomodromo-header,.resource-heading,.to-do-list-heading,.go-back,.month-name{
+  width: 191px;
+  height: 55px;
+  color:white;
+  border-radius: 30px 30px 30px 30px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  margin: 24px auto 24px auto;
+  text-shadow: 4px 4px 3px #00000033;
+  font-family: "Sue Ellen Francisco", cursive;
+  font-size: 20px;
+  font-style: normal;
+}
+
+.reset-btn,.go-back{
+  background-color: #35d0efFF;
+  transition: background-color 0.3s;
+}
+
+.reset-btn:hover,.go-back:hover{
+  background-color: hsl(190, 85%, 40%);
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.start-btn,.pause-btn{
+  background-color: rgb(62, 39, 240);
+  transition: background-color 0.3s;
+}
+
+.start-btn:hover,.pause-btn:hover{
+  background-color: rgb(97, 78, 242);
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.month-name{
+  background: #f87ae7FF;
+}
+
+.month-header {
+  display: flex;
+  justify-content: center;
+}
+
+.plus-btn,.month-header button {
+  font-size: 16px;
+  width: 55px;
+  height: 55px;
+  background-color: #35d0efFF;
+  color: white;
+  font-size: 40px;
+  text-shadow: 4px 4px 3px #00000033;
+  border: 1px solid #000000;
+  border-radius: 50%;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  margin: auto 160px auto 160px;
+  transition: background-color 0.3s;
+}
+
+.plus-btn:hover,.month-header button:hover{
+ background-color: hsl(195, 100%, 40%);
+ cursor: pointer;
+ transform: scale(1.05);
+}
+
+.sign-up{
+  color: rgb(0, 0, 0);
+  margin-bottom: 23px;
+  line-height: 1.2;
+  letter-spacing: 5;
+  text-shadow: 4px 4px 3px #00000033;
+}
+
+a{
+  text-decoration: none;
+  cursor: pointer;
+  color: #d8a4f6FF;
+}
+
+a:hover{
+  color: white;
+}
+
+.card{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px;
+  background: #d8a4f6FF;
+  text-shadow: 4px 4px 3px #00000033;
+  border-radius: 30px 30px 30px 30px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid black;
+}
+
+.login-card{
+  width: 334px;
+  height: 404px;
+  
+}
+
+.register-card{
+  width: 467px;
+  height: 586px;
+}
+
+.register-card label,.login-card label{
+  margin-top: 17px;
+  margin-bottom: 17px;
+}
+
+.user-btn,.register-card button,.login-card button{
+  background: #8229a8FF;
+  border-radius: 30px 30px 30px 30px;
+  width: 153px;
+  height: 47px;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  border: 1px solid #000000;
+  font-family: "Sue Ellen Francisco", cursive;
+  text-shadow: 4px 4px 3px #00000033;
+  font-size: 20px;
+  font-style: normal;
+  color:white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 50px auto 0 auto;
+  transition: background-color 0.3s;
+}
+
+.todo-tab,.register-card input,.login-card input{
+  padding: 12px 20px;
+  border-radius: 30px 30px 30px 30px;
+  border: 1px solid #000000;
+  font-family: "Sue Ellen Francisco", cursive;
+  font-size: 18px;
+  text-shadow: 4px 4px 3px #00000033;
+  box-shadow: 4px 4px 4px 0px #00000033;
+}
+
+.user-btn:hover,.register-card button:hover,.login-card button:hover {
+  cursor: pointer;
+  background-color:hsl(285, 60%, 35%);
+  transform: scale(1.05);
+}
+
+.to-do-list-heading{
+  background: #f0f6b5FF;
+  color:black;
+}
+
+.add-todo-btn{
+  background: #ef6b97FF;
+  border-radius: 30px 30px 30px 30px;
+  border: 1px solid #000000;
+  width: 85px;
+  height: 49px;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  font-family: "Sue Ellen Francisco", cursive;
+  font-size: 20px;
+  font-style: normal;
+  color:white;
+  text-shadow: 4px 4px 3px #00000033;
+}
+.add-todo-btn:hover{
+  transform: scale(1.05);
+  cursor: pointer;
+  background: hsl(340, 80%, 60%);
+}
+
+.resource-heading{
+  background: #2196fdFF;
+}
+.plus-btn{
+  margin: auto auto auto 15px;
+}
+.resource-header{
+  display:flex;
+  align-items: center;
+}
+.resource-box{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.resource-title{
+  border-radius: 30px 30px 0px 0px;
+  background: #fa9f9fFF;
+  width: 334px;
+  height: 54px;
+}
+.resource-link{
+  width: 334px;
+  height: 165px;
+}
+
+.pomodromo-header{
+  background: #2c0645FF;
+  border: 2px solid white;
+  text-shadow: 10px 4px 3px black;
+}
+
+.pomodromo-box{
+  width: 535px;
+  height: 224px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  gap: 90px;
+}
+
+.inner-circle,.outer-circle{
+  width: 176px;
+  height: 171px;
+  border-radius: 50%;
+  background: #f6eba6FF;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  border: 1px solid #000000;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+.inner-circle{
+  width: 144px;
+  height: 135px;
+  background: #fdfbefFF;
+  box-shadow: inset 4px 4px 4px 0px #00000033;
+}
+
+.time-input{
+  background: #061364FF;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  border: 2px solid white;
+  width: 112px;
+  height: 46px;
+  text-align: center;
+  color: white;
+  font-family: "Sue Ellen Francisco", cursive;
+  font-size: 24px;
+  font-style: normal;
+  text-shadow: 4px 4px 3px #00000033;
+  border-radius: 15px 15px 15px 15px;
+}
+
+.pomodromo-btn{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  gap:37px;
+  margin:15px 0px 0px 0px;
+}
+
+.home-page-menu{
+  width: 980px;
+  height: 344px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+
+.menu-btn {
+  background: none;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 20px;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu-btn:hover {
+  transform: scale(1.05);
+}
+
+.menu-btn p {
+  margin-bottom: 15px;
+  font-family: "Sue Ellen Francisco", cursive;
+  font-size: 18px;
+  text-transform: uppercase;
+  text-shadow: 4px 4px 3px #00000033;
+  color: #000;
+}
+
+.todo-icon-outer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 171px;
+  border-radius: 15px 15px 15px 15px;
+  border: 1px solid #000000FF;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  background: #fdabbbFF;
+}
+
+.todo-icon {
+  width: 130px;
+  height: 141px;
+  background: #fff;
+  border: 1px solid black;
+  border-radius: 15px 15px 15px 15px;
+  padding: 12px;
+  box-shadow: inset 4px 4px 4px 0px #00000033;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.todo-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.todo-line .dot {
+  width: 10px;
+  height: 10px;
+  background: black;
+  border-radius: 50%;
+  box-shadow: 4px 4px 4px 0px #00000033;
+}
+
+.todo-line .line {
+  width: 60px;
+  height: 2px;
+  background: black;
+  box-shadow: 4px 4px 4px 0px #00000033;
+}
+
+.clock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 182px;
+  height: 182px;
+  border-radius: 50%;
+  background:#d9ef58;
+  border: 1px solid black;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+}
+
+.inner-face {
+  height: 144px;
+  width: 144px;
+  border-radius: 50%;
+  background: #f2f2e6FF;
+  box-shadow: inset 4px 4px 4px 0px #00000033;
+  border: 1px solid black;
+  position: relative;
+}
+
+
+.clock-hand {
+  width: 2px;
+  background-color: black;
+  position: absolute;
+  bottom: 40%;
+  left: 47%;
+  transform-origin: bottom center;
+  box-shadow: 4px 4px 4px 0px #00000033
+}
+
+.hour {
+  height: 50px;
+  transform: rotate(-45deg);
+}
+
+.minute {
+  height: 68px;
+  transform: rotate(45deg);
+}
+
+.resources-icon {
+  width: 150px;
+  height: 171px;
+  background: #3c65fc;
+  border-radius: 15px;
+  border: 1px solid black;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  position: relative;
+}
+
+.res-block {
+  background: #a5bbfdFF;
+  border-radius: 15px 15px 15px 15px;
+  border: 1px solid black;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  position: absolute;
+  width: 83px;
+  height: 19px;
+}
+
+.short1{ 
+  top:15%;
+  left:12%;
+}
+.short2{ 
+  top:35%;
+  right:12%;
+}
+.short3{ 
+  bottom:34%;
+  left:12%;
+}
+.short4{ 
+  bottom:15%;
+  right:12%;
+}
+
+.outer-calendar-icon{
+  width: 166px;
+  height: 165px;
+  background: #f14fe6FF;
+  border: 1px solid #000000FF;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  border-radius: 15px 15px 15px 15px;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.calendar-icon {
+  width: 140px;
+  height: 133px;
+  background: #ee7cf6FF;
+  border: 1px solid #000000FF;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  border-radius: 15px 15px 15px 15px;
+  border: 1px solid black;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cell {
+  width: 35px;
+  height: 23px;
+  background: #fff;
+  border: 1px solid #000000FF;
+  box-shadow: 4px 4px 4px 0px #00000033;
+}
+
+.home-page-user-btns{
+  display: flex;
+  gap:583px;
+}
