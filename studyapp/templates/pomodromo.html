@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googSleapis.com/css2?family=Sue+Ellen+Francisco&display=swap" rel="stylesheet">
-  <meta charset="UTF-8">
-  <title>POMODROMO</title>
-  <link rel="stylesheet" href="static/style.css">
-</head>
-<body>
+{% extends "layout.html" %}
+{% block content %}
     <p class="pomodromo-header">POMODROMO</p>
     <div class="box pomodromo-box">
         <div class="outer-circle">
@@ -27,8 +17,11 @@
         <button class="start-btn" id="startBtn">START</button>
         <button class="reset-btn" id="resetBtn">RESET</button>
         <button class="pause-btn" id="pauseBtn">PAUSE</button>
-
     </div>
+    <button class="go-back" id="go_back" onclick="location.href='{{ url_for('home') }}'">GO BACK</button>
+  {% endblock %}
+
+  {% block scripts %}
     <script>
     let timer = null;
     let isRunning = false;
@@ -112,5 +105,4 @@
     updateDisplay();
     });
   </script>
-</body>
-</html>
+{% endblock %}

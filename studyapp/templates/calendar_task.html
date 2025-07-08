@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="box calendar-box-task">
+    <div class="month-header">
+        <p class="month-name" id="monthName">MONTH NAME</p>
+    </div>
+        <form class="calendar-todo">
+            <div class="day-task">
+            <label for="task">1</label>
+            <textarea id="task1" placeholder="Enter your task..."></textarea>
+            </div>
+        </form>
+
+        <button class="go-back" id="go_back" onclick="location.href='{{ url_for('home') }}'">GO BACK</button>
+    </div>
+ {% endblock %}

@@ -14,7 +14,6 @@ body{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-
 }
 
 .box{
@@ -28,14 +27,16 @@ body{
 .calendar-box{
   width: 965px;
   height: 667px;
+  margin-top: 24px;
 }
 
-.resource-hub-box, .to-do-box,.calendar-box-task{
+.resource-hub-box,.to-do-box,.calendar-box-task{
   width: 900px;
   height: 735px;
   display:flex;
   flex-direction:column;
   align-items:center;
+  margin-top: 24px;
 }
 
 .calendar-todo{
@@ -122,23 +123,23 @@ body{
   font-style: normal;
 }
 
-.reset-btn,.go-back{
+.go-back{
   background-color: #35d0efFF;
   transition: background-color 0.3s;
 }
 
-.reset-btn:hover,.go-back:hover{
+.go-back:hover{
   background-color: hsl(190, 85%, 40%);
   cursor: pointer;
   transform: scale(1.05);
 }
 
-.start-btn,.pause-btn{
+.reset-btn,.start-btn,.pause-btn{
   background-color: rgb(62, 39, 240);
   transition: background-color 0.3s;
 }
 
-.start-btn:hover,.pause-btn:hover{
+.reset-btn:hover,.start-btn:hover,.pause-btn:hover{
   background-color: rgb(97, 78, 242);
   cursor: pointer;
   transform: scale(1.05);
@@ -154,18 +155,22 @@ body{
 }
 
 .plus-btn,.month-header button {
-  font-size: 16px;
+
   width: 55px;
   height: 55px;
   background-color: #35d0efFF;
   color: white;
-  font-size: 40px;
+  font-size:40px;
+  text-align: center;
   text-shadow: 4px 4px 3px #00000033;
   border: 1px solid #000000;
   border-radius: 50%;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
   margin: auto 160px auto 160px;
   transition: background-color 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .plus-btn:hover,.month-header button:hover{
@@ -235,8 +240,11 @@ a:hover{
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 50px auto 0 auto;
+  margin: 30px auto 0 auto;
   transition: background-color 0.3s;
+}
+.login-card button{
+  margin: 0px auto 0 auto;
 }
 
 .todo-tab,.register-card input,.login-card input{
@@ -332,6 +340,7 @@ a:hover{
   justify-content: center;
   align-items: center;
 }
+
 .inner-circle{
   width: 144px;
   height: 135px;
@@ -556,7 +565,7 @@ a:hover{
 
 .row {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .cell {
@@ -570,4 +579,56 @@ a:hover{
 .home-page-user-btns{
   display: flex;
   gap:583px;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  padding: 10px;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  margin-bottom: 10px;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  border-radius: 15px 15px 15px 15px;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  padding: 10px;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  margin-bottom: 10px;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  border-radius: 15px 15px 15px 15px;
+  text-shadow: 4px 4px 3px #00000033;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  padding: 10px;
+  border: 1px solid #bee5eb;
+  color: #0c5460;
+  margin-bottom: 10px;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  border-radius: 15px 15px 15px 15px;
+  text-shadow: 4px 4px 3px #00000033;
+}
+
+.form-error {
+  font-size: 13px;
+  color: red;
+  margin-top: 5px;
+  margin-left: 10px;
+  display: block;
+  font-family: "Sue Ellen Francisco", cursive;
+  text-shadow: 1px 1px 1px #00000022;
+}
+
+.register-card input + .form-error,
+.login-card input + .form-error {
+  min-height: 8px; 
+}
+
+.forgot-password{
+  text-shadow: 4px 4px 3px #00000033;
+  margin-top: 23px;
 }

@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googSleapis.com/css2?family=Sue+Ellen+Francisco&display=swap" rel="stylesheet">
-  <meta charset="UTF-8">
-  <title>Sapience Home Page</title>
-  <link rel="stylesheet" href="static/style.css">
-</head>
-<body>
+{% extends "layout.html" %}
+{% block content %}
   <div class="box home-page-menu">
-  <button class="menu-btn" onclick="location.href='#'">
+  <button class="menu-btn" onclick="location.href='{{ url_for('to_do_list') }}'">
     <p>TO DO LIST</p>
     <div class="todo-icon-outer">
     <div class="todo-icon">
@@ -31,7 +21,7 @@
     <div>
   </button>
 
-  <button class="menu-btn" onclick="location.href='#'">
+  <button class="menu-btn" onclick="location.href='{{ url_for('pomodromo') }}'">
     <p>POMODROMO</p>
     <div class="clock">
       <div class="inner-face">  
@@ -41,7 +31,7 @@
     </div>
   </button>
 
-  <button class="menu-btn" onclick="location.href='#'">
+  <button class="menu-btn" onclick="location.href='{{ url_for('resources') }}'">
     <p>RESOURCES</p>
     <div class="resources-icon">
       <div class="res-block short1"></div>
@@ -51,7 +41,7 @@
     </div>
   </button>
 
-  <button class="menu-btn" onclick="location.href='#'">
+  <button class="menu-btn" onclick="location.href='{{ url_for('calendar') }}'">
     <p>CALENDAR</p>
     <div class="outer-calendar-icon">
     <div class="calendar-icon">
@@ -69,8 +59,12 @@
   </button>
  </div>
  <div class="home-page-user-btns">
- <button class="user-btn" onclick="location.href='#'">LOGIN</button>
- <button class="user-btn" onclick="location.href='#'">REGISTER</button>
+ {% if current_user.is_authenticated %}
+    <button class="user-btn" onclick="location.href='{{ url_for('logout') }}'">LOGOUT</button>
+    <button class="user-btn" onclick="location.href='#'">ACCOUNT</button>
+  {% else %}
+    <button class="user-btn" onclick="location.href='{{ url_for('login') }}'">LOGIN</button>
+    <button class="user-btn" onclick="location.href='{{ url_for('register') }}'">REGISTER</button>
+  {% endif %}
  </div>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+  <p class="sign-up">ALREADY REGISTERED? <a href="{{ url_for('login')}}">LOGIN</a></p>
+  <div>
+    <form class="card register-card" method="POST" novalidate>
+      {{ form.hidden_tag() }}
+
+      {{ form.username.label }}
+      {{ form.username(placeholder="Enter a username", id="username") }}
+      {% for error in form.username.errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+
+      {{ form.email.label }}
+      {{ form.email(placeholder="Enter your email", id="email") }}
+      {% for error in form.email.errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+
+      {{ form.password.label }}
+      {{ form.password(placeholder="Enter password", id="password") }}
+      {% for error in form.password.errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+
+      {{ form.confirm_password.label }}
+      {{ form.confirm_password(placeholder="Confirm password", id="confirm-password") }}
+      {% for error in form.confirm_password.errors %}
+          <span class="form-error">{{ error }}</span>
+      {% endfor %}
+
+      <button type="submit">REGISTER</button>
+    </form>
+  </div>
+{% endblock %}
