@@ -30,13 +30,41 @@ body{
   margin-top: 24px;
 }
 
-.resource-hub-box,.to-do-box,.calendar-box-task{
+.calendar-box-task{
   width: 900px;
   height: 735px;
   display:flex;
   flex-direction:column;
   align-items:center;
   margin-top: 24px;
+}
+.resource-hub-box,.to-do-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  padding-left: 30px;
+  padding-right:30px;
+  margin-top: 24px;
+
+  width: auto;
+  max-width: 90%;     
+  min-width: 300px;
+
+  height: auto;
+  min-height: 200px;
+  max-height: 90vh;    
+
+  background-color: #d8aaff;  
+  overflow-y: auto;          
+}
+
+.to-do-list {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  margin-bottom: 24px;
 }
 
 .calendar-todo{
@@ -155,7 +183,6 @@ body{
 }
 
 .plus-btn,.month-header button {
-
   width: 55px;
   height: 55px;
   background-color: #35d0efFF;
@@ -243,11 +270,24 @@ a:hover{
   margin: 30px auto 0 auto;
   transition: background-color 0.3s;
 }
+
 .login-card button{
   margin: 0px auto 0 auto;
 }
 
-.todo-tab,.register-card input,.login-card input{
+.todo-card{
+   width: auto;
+  max-width: 100%;     
+  min-width: 400px;
+
+  height: auto;
+  min-height: 200px;
+  max-height: 90vh;    
+  
+  margin: 0px 30px 0px 30px;
+}
+
+.todo-card input,.todo-tab,.register-card input,.login-card input,.task{
   padding: 12px 20px;
   border-radius: 30px 30px 30px 30px;
   border: 1px solid #000000;
@@ -255,6 +295,10 @@ a:hover{
   font-size: 18px;
   text-shadow: 4px 4px 3px #00000033;
   box-shadow: 4px 4px 4px 0px #00000033;
+}
+
+.todo-tab:hover{
+  transform: scale(1.05);
 }
 
 .user-btn:hover,.register-card button:hover,.login-card button:hover {
@@ -280,23 +324,42 @@ a:hover{
   font-style: normal;
   color:white;
   text-shadow: 4px 4px 3px #00000033;
+  margin-top: 20px;
+  padding: 10px;
 }
+
 .add-todo-btn:hover{
   transform: scale(1.05);
   cursor: pointer;
   background: hsl(340, 80%, 60%);
 }
 
+.done{
+  margin-top: 0px;
+}
+.update,.delete{
+  width: 120px;
+  height: 49px;
+}
+
+.task{
+  background-color: white;
+  text-transform: none;
+}
+
 .resource-heading{
   background: #2196fdFF;
 }
+
 .plus-btn{
   margin: auto auto auto 15px;
 }
+
 .resource-header{
   display:flex;
   align-items: center;
 }
+
 .resource-box{
   display: flex;
   flex-direction: column;
@@ -309,6 +372,7 @@ a:hover{
   width: 334px;
   height: 54px;
 }
+
 .resource-link{
   width: 334px;
   height: 165px;
@@ -379,7 +443,6 @@ a:hover{
   justify-content: space-around;
 }
 
-
 .menu-btn {
   background: none;
   border: none;
@@ -397,7 +460,7 @@ a:hover{
   transform: scale(1.05);
 }
 
-.menu-btn p {
+.menu-btn p{
   margin-bottom: 15px;
   font-family: "Sue Ellen Francisco", cursive;
   font-size: 18px;
@@ -475,7 +538,6 @@ a:hover{
   position: relative;
 }
 
-
 .clock-hand {
   width: 2px;
   background-color: black;
@@ -549,6 +611,7 @@ a:hover{
   align-items: center;
   justify-content: center;
 }
+
 .calendar-icon {
   width: 140px;
   height: 133px;

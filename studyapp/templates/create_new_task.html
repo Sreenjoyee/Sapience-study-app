@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+<p class="to-do-list-heading">{{p or 'NEW TASK'}}</p>
+  <div>
+    <form class="card todo-card" method="POST" novalidate>
+      {{ form.hidden_tag() }}
+
+      {{ form.task(placeholder="Enter task") }}
+
+      {% for error in form.task.errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+
+      <button class="add-todo-btn" type="submit">ADD</button>
+    </form>
+  </div>
+  <button class="go-back" id="go_back" onclick="location.href='{{ url_for('to_do_list', username=current_user.username) }}'">GO BACK</button>
+{% endblock %}

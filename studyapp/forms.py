@@ -25,3 +25,6 @@ class LoginForm(FlaskForm):
     email=StringField('EMAIL', validators=[DataRequired(),Email()])
     password=PasswordField('PASSWORD', validators=[DataRequired()])
     remember=BooleanField('REMEMBER ME')
+
+class TaskForm(FlaskForm):
+    task=StringField(validators=[DataRequired(),Length(min=1,max=200)])

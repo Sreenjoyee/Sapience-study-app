@@ -1,11 +1,18 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="box to-do-box">
+        <div class="resource-header">
         <p class="to-do-list-heading">TO DO LIST</p> 
-        <form>
-            <input class="todo-tab" type="text" id="todo1" placeholder="Enter task">
-            <button class="add-todo-btn" type="submit">ADD</button>
+        <button class="plus-btn" onclick="location.href='{{ url_for('new_task') }}'">&plus;</button>
+        </div>
+        {% for task in tasks %}
+        <div class="to-do-list">
+        <button class="todo-tab" onclick="location.href='{{ url_for('task',task_id=task.id) }}'">{{task.task}}</button>
+        <form method="POST" action="{{ url_for('mark_done', task_id=task.id) }}">
+            <button class="add-todo-btn done" type="submit">DONE</button>
         </form>
+        </div>
+        {% endfor %}
     </div>
     <button class="go-back" id="go_back" onclick="location.href='{{ url_for('home') }}'">GO BACK</button>
 {% endblock %}

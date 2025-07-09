@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
   <div class="box home-page-menu">
-  <button class="menu-btn" onclick="location.href='{{ url_for('to_do_list') }}'">
+  <button class="menu-btn" onclick="location.href='{{ url_for('to_do_list', username=current_user.username) }}'">
     <p>TO DO LIST</p>
     <div class="todo-icon-outer">
     <div class="todo-icon">
