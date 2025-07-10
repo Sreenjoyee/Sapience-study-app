@@ -1,7 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
   <div class="box home-page-menu">
-  <button class="menu-btn" onclick="location.href='{{ url_for('to_do_list', username=current_user.username) }}'">
+  {% if current_user.is_authenticated %}
+    <button class="menu-btn" onclick="location.href='{{ url_for('to_do_list', username=current_user.username) }}'">
+  {% else %}
+    <button class="menu-btn" onclick="location.href='{{ url_for('login') }}'">
+  {% endif %}
     <p>TO DO LIST</p>
     <div class="todo-icon-outer">
     <div class="todo-icon">
@@ -21,7 +25,11 @@
     <div>
   </button>
 
-  <button class="menu-btn" onclick="location.href='{{ url_for('pomodromo') }}'">
+  {% if current_user.is_authenticated %}
+    <button class="menu-btn" onclick="location.href='{{ url_for('pomodromo') }}'">
+  {% else %}
+    <button class="menu-btn" onclick="location.href='{{ url_for('login') }}'">
+  {% endif %}
     <p>POMODROMO</p>
     <div class="clock">
       <div class="inner-face">  
@@ -31,7 +39,11 @@
     </div>
   </button>
 
-  <button class="menu-btn" onclick="location.href='{{ url_for('resources') }}'">
+  {% if current_user.is_authenticated %}
+    <button class="menu-btn" onclick="location.href='{{ url_for('resources', username=current_user.username) }}'">
+  {% else %}
+    <button class="menu-btn" onclick="location.href='{{ url_for('login') }}'">
+  {% endif %}
     <p>RESOURCES</p>
     <div class="resources-icon">
       <div class="res-block short1"></div>
@@ -41,7 +53,12 @@
     </div>
   </button>
 
-  <button class="menu-btn" onclick="location.href='{{ url_for('calendar') }}'">
+  {% if current_user.is_authenticated %}
+    <button class="menu-btn" onclick="location.href='{{ url_for('calendar') }}'">
+  {% else %}
+    <button class="menu-btn" onclick="location.href='{{ url_for('login') }}'">
+  {% endif %}
+
     <p>CALENDAR</p>
     <div class="outer-calendar-icon">
     <div class="calendar-icon">
@@ -61,7 +78,7 @@
  <div class="home-page-user-btns">
  {% if current_user.is_authenticated %}
     <button class="user-btn" onclick="location.href='{{ url_for('logout') }}'">LOGOUT</button>
-    <button class="user-btn" onclick="location.href='#'">ACCOUNT</button>
+    <button class="user-btn" onclick="location.href='{{ url_for('account') }}'">ACCOUNT</button>
   {% else %}
     <button class="user-btn" onclick="location.href='{{ url_for('login') }}'">LOGIN</button>
     <button class="user-btn" onclick="location.href='{{ url_for('register') }}'">REGISTER</button>

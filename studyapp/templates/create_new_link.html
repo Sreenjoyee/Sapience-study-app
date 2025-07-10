@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+<p class="to-do-list-heading">{{ p or 'NEW Link' }}</p>
+  <div>
+    <form class="card resource-card" method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="resource-box">
+      {{ form.title(class_="resource-title", placeholder="Enter title") }}
+      {% for error in form.title.errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+
+      {{ form.link(class_="resource-link", placeholder="Enter link") }}
+      {% for error in form.link.errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+      </div>
+      <button class="add-todo-btn" type="submit">ADD</button>
+    </form>
+  </div>
+  <button class="go-back" id="go_back" onclick="location.href='{{ url_for('resources', username=current_user.username) }}'">GO BACK</button>
+{% endblock %}
+

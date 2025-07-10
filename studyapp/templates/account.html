@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div>
+    <form class="card update-card" method="POST" novalidate>
+      {{ form.hidden_tag() }}
+
+      {{ form.username.label }}
+      {{ form.username(placeholder="Enter a username", id="username") }}
+      {% for error in form.username.errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+
+      {{ form.email.label }}
+      {{ form.email(placeholder="Enter your email", id="email") }}
+      {% for error in form.email.errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+
+      <button type="submit">UPDATE</button>
+    </form>
+  </div>
+  <button class="go-back" id="go_back" onclick="location.href='{{ url_for('home') }}'">GO BACK</button>
+{% endblock %}

@@ -1,14 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
+  <form method="GET" action="{{ url_for('resources', username=current_user.username) }}">
+    <input type="text" name="q" placeholder="Search by title..." class="search-input">
+    <button type="submit" class="search-btn">Search</button>
+    {% if request.args.get('q') %}
+      <button onclick="location.href='{{ url_for('resources', username=current_user.username) }}'" class="clear-btn">Clear</button>
+    {% endif %}
+  </form>
   <div class="box resource-hub-box">
     <div class="resource-header">
     <p class="resource-heading">RESOURCES</p>
-    <button class="plus-btn">&plus;</button>
+    <button class="plus-btn" onclick="location.href='{{ url_for('new_link') }}'">&plus;</button>
     </div>
-      <form class="resource-box">
-        <input class="resource-title" type="text" id="resource" placeholder="Enter title">
-        <textarea class="resource-link" id="resource1" placeholder="Enter link"></textarea>
-      </form>
+      {% for resource in resources %}
+        <div class="resource-box">
+        <a class="resource-title resource-paragraph" href="{{ url_for('view_link', link_id=resource.id) }}">{{resource.title}}</a>
+        <a class="resource-link resource-paragraph" href="{{ resource.link }}" target="_blank">{{resource.link}}</a>
+        </div>
+      {% endfor %}
   </div>
   <button class="go-back" id="go_back" onclick="location.href='{{ url_for('home') }}'">GO BACK</button>
 {% endblock %}
