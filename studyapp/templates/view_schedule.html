@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="box calendar-box-task">
+    <div class="month-header">
+        <p class="month-name" id="monthName">{{ date.strftime('%B %Y') }}</p>
+    </div>
+    <div class="calendar-todo">
+            <div class="day-task">
+            <div class="view-schedule-label">{{ date.day }}</div>
+            <div class="view-schedule-notes">{{schedule.notes}}</div>
+            </div>
+            <div>
+            <button class="add-todo-btn update" onclick="location.href='{{ url_for('update_schedule',schedule_id=schedule.id) }}'">UPDATE</button>
+            <button class="add-todo-btn delete" data-bs-toggle="modal" data-bs-target="#deleteModal">DELETE</button>
+          </div> 
+    </div>  
+  </div>
+  <button class="go-back" id="go_back" onclick="location.href='{{ url_for('calendar',username=current_user.username) }}'">GO BACK</button>
+
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title text-dark" id="deleteModalLabel">Confirm Deletion</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body text-dark">
+          Are you sure you want to delete this schedule?
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+          <form action="{{ url_for('delete_schedule', schedule_id=schedule.id) }}" method="POST">
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -23,20 +23,22 @@ body{
   
 }
 
-.calendar-box{
-  width: 965px;
-  height: 667px;
-  margin-top: 24px;
-}
-
 .calendar-box-task{
-  width: 900px;
-  height: 735px;
+  width: 500px;
+  height: 430px;
   display:flex;
   flex-direction:column;
   align-items:center;
-  margin-top: 24px;
+  padding:0px 30px 0px 30px;
 }
+
+.calendar-todo{
+  display:flex;
+  flex-direction:column;
+  align-items: center;
+  
+}
+
 .resource-hub-box,.to-do-box {
   display: flex;
   flex-direction: column;
@@ -66,11 +68,6 @@ body{
   margin-bottom: 24px;
 }
 
-.calendar-todo{
-  display:flex;
-  flex-direction:row;
-}
-
 .day{
   display:flex;
   flex-direction:column;
@@ -78,7 +75,21 @@ body{
   margin: 20px 20px 20px 20px;
 }
 
-.day-task label,.day label{
+.calendar-box{
+  width: 965px;
+  height: 667px;
+  margin-top: 24px;
+}
+
+.calendar-grid {
+  display: flex;
+  flex-direction: column;
+}
+.week {
+  display: flex;
+}
+
+.view-schedule-label,.day-task label,.day label{
   border: 1px solid black;
   background: #f6a4f3FF;
   box-shadow: 4px 4px 4px 0px #00000033;
@@ -88,7 +99,9 @@ body{
   text-align: center;
   text-shadow: 4px 4px 3px #00000033;
 }
-
+.day.has-task label{
+  background: hsl(302, 82%, 50%);
+}
 .day label{
   display: block;
   width: 97px;
@@ -97,7 +110,7 @@ body{
   cursor: pointer;
 }
 
-.resource-link,.resource-title,.day input,.day-task textarea{
+.view-schedule-notes,.resource-link,.resource-title,.day input,.day-task textarea{
   border: 1px solid black;
   background: white;
   box-shadow: 4px 4px 4px 0px #00000033;
@@ -115,22 +128,24 @@ body{
 }
 
 
-.day-task label{
-  width: 648px;
-  height: 74px;
+.view-schedule-label,.resource-title,.day-task label{
+  width: 334px;
+  height: 54px;
   border-radius: 30px 30px 0px 0px;
 }
 
 .day:hover{
   transform: scale(1.05);
+  filter: brightness(85%);
 }
 
-.resource-link,.day-task textarea{
-  width: 648px;
-  height: 450px;
+.view-schedule-notes,.resource-link,.day-task textarea{
+  width: 334px;
+  height: 165px;
+  overflow-y: auto;
+  padding:10px;
   border-radius:0px 0px 30px 30px ;
   resize: none;
-  overflow: auto;
 }
 
 .start-btn,.pause-btn,.reset-btn,.pomodromo-header,.resource-heading,.to-do-list-heading,.go-back,.month-name{
@@ -173,6 +188,7 @@ body{
 }
 
 .month-name{
+  text-transform: uppercase;
   background: #f87ae7FF;
 }
 
@@ -273,7 +289,6 @@ a:hover{
 .login-card button{
   margin: 0px auto 0 auto;
 }
-
 .resource-card,.todo-card{
   width: auto;
   max-width: 100%;     
@@ -366,17 +381,7 @@ a:hover{
 }
 
 .resource-title{
-  border-radius: 30px 30px 0px 0px;
   background: #fa9f9fFF;
-  width: 334px;
-  height: 54px;
-  padding:10px;
-}
-
-.resource-link{
-  width: 334px;
-  height: 165px;
-  overflow-y: auto;
   padding:10px;
 }
 
@@ -477,6 +482,7 @@ a:hover{
 
 .menu-btn:hover {
   transform: scale(1.05);
+  cursor: pointer;
   filter:brightness(95%);
 }
 
@@ -664,36 +670,34 @@ a:hover{
   gap:583px;
 }
 
+.flash-message{
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  text-align: center;
+  padding: 10px;
+  box-shadow: 4px 4px 4px 0px #00000033;
+  border-radius: 15px;
+  text-shadow: 4px 4px 3px #00000033;
+}
 .alert-success {
   background-color: #d4edda;
-  padding: 10px;
   border: 1px solid #c3e6cb;
   color: #155724;
-  margin-bottom: 10px;
-  box-shadow: 4px 4px 4px 0px #00000033;
-  border-radius: 15px 15px 15px 15px;
 }
 
 .alert-danger {
   background-color: #f8d7da;
-  padding: 10px;
   border: 1px solid #f5c6cb;
   color: #721c24;
-  margin-bottom: 10px;
-  box-shadow: 4px 4px 4px 0px #00000033;
-  border-radius: 15px 15px 15px 15px;
-  text-shadow: 4px 4px 3px #00000033;
 }
 
 .alert-info {
   background-color: #d1ecf1;
-  padding: 10px;
   border: 1px solid #bee5eb;
   color: #0c5460;
-  margin-bottom: 10px;
-  box-shadow: 4px 4px 4px 0px #00000033;
-  border-radius: 15px 15px 15px 15px;
-  text-shadow: 4px 4px 3px #00000033;
 }
 
 .form-error {

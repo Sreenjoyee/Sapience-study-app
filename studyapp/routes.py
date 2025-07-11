@@ -1,8 +1,9 @@
 from flask import render_template,flash,redirect, request,abort,url_for
 from flask_login import login_user,current_user, logout_user, login_required
 from studyapp import app,db,bcrypt
-from studyapp.forms import RegistrationForm,LoginForm,TaskForm,ResourceForm,UpdateForm
+from studyapp.forms import RegistrationForm,LoginForm,TaskForm,ResourceForm,UpdateForm,ScheduleForm
 from studyapp.models import User,ToDo,Resource,Schedule
+from datetime import datetime
 
 @app.route("/")
 @app.route("/home")
@@ -36,7 +37,10 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page=request.args.get('next')
-            return redirect(url_for('home'))
+            if next_page:
+                return redirect(next_page)
+            else:
+                return redirect(url_for('home'))
         else:
             flash("Login unsuccessful please provide the correct email and password", 'danger')
     return render_template('login.html',title='Login',form=form)
@@ -110,7 +114,7 @@ def update_task(task_id):
     elif request.method == 'GET':
         form.task.data=todo_task.task
 
-    return render_template('create_new_task.html',title='Update Task', form =form, p='Update Task')
+    return render_template('create_new_task.html',title='Update Task', form =form, p='UPDATE TASK')
 
 @app.route('/todo/<int:task_id>/delete', methods=['POST'])
 @login_required
@@ -195,7 +199,7 @@ def update_link(link_id):
         form.title.data=resource.title
         form.link.data=resource.link
 
-    return render_template('create_new_link.html',title='Update Link', form =form, p='Update Link')
+    return render_template('create_new_link.html',title='Update Link', form =form, p='UPDATE LINK')
 
 @app.route('/resources/<int:link_id>/delete', methods=['POST'])
 @login_required
@@ -216,12 +220,77 @@ def pomodromo():
     return render_template('pomodromo.html',title='Pomodromo')
 
 #CALENDAR
-@app.route("/calendar")
+@app.route("/calendar/<string:username>")
 @login_required
-def calendar():
-    return render_template('calendar.html',title='Calendar')
+def calendar(username):
+    if username != current_user.username:
+        flash("You are not authorized to view this page.",'info')
+        return redirect(url_for("home"))
 
-@app.route("/calendar_task")
+    schedules = Schedule.query.filter_by(user=current_user).all()
+    schedules_dict = [
+        {
+            "id": s.id,
+            "date": s.date.isoformat(), 
+            "notes": s.notes
+        }
+        for s in schedules
+    ]
+    return render_template('calendar.html', title='Calendar', schedules=schedules_dict)
+
+@app.route("/calendar/new/<date>", methods=["GET", "POST"])
 @login_required
-def calendar_task():
-    return render_template('calendar_task.html',title='Calendar Task')
+def add_schedule(date):
+    parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
+    existing = Schedule.query.filter_by(user=current_user, date=parsed_date).first()
+    if existing:
+        return redirect(url_for('view_schedule', schedule_id=existing.id))
+    
+    form = ScheduleForm()
+    if form.validate_on_submit():
+        new_schedule = Schedule(date=parsed_date, notes=form.notes.data, user=current_user)
+        db.session.add(new_schedule)
+        db.session.commit()
+        flash('Schedule added!', 'success')
+        return redirect(url_for('calendar', username=current_user.username))
+
+    return render_template('add_schedule.html',title='New Schedule',date=parsed_date,form=form )
+
+@app.route("/calendar/<int:schedule_id>")
+@login_required
+def view_schedule(schedule_id):
+    schedule = Schedule.query.get_or_404(schedule_id)
+    if schedule.user != current_user:
+        abort(403)
+    date = schedule.date
+
+    return render_template('view_schedule.html', title='Schedule', schedule=schedule, date=date)
+
+@app.route('/calendar/<int:schedule_id>/update',methods=['GET','POST'])
+@login_required
+def update_schedule(schedule_id):
+    schedule = Schedule.query.get_or_404(schedule_id)
+    if schedule.user != current_user:
+        abort(403)
+
+    form = ScheduleForm()
+    if form.validate_on_submit():
+        schedule.notes = form.notes.data
+        flash('Schedule updated!', 'success')
+        return redirect(url_for('calendar', username=current_user.username))
+    
+    elif request.method == 'GET':
+        form.notes.data=schedule.notes 
+
+    return render_template('add_schedule.html',title='Update Schedule',date=schedule.date, form =form)
+
+@app.route("/calendar/<int:schedule_id>/delete",methods=['POST'])
+@login_required
+def delete_schedule(schedule_id):
+    schedule = Schedule.query.get_or_404(schedule_id)
+    if schedule.user != current_user:
+        abort(403)
+    db.session.delete(schedule)
+    db.session.commit()
+    flash('The schedule has been deleted!', 'success')
+    return redirect(url_for('calendar', username=current_user.username))

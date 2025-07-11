@@ -54,7 +54,7 @@
   </button>
 
   {% if current_user.is_authenticated %}
-    <button class="menu-btn" onclick="location.href='{{ url_for('calendar') }}'">
+    <button class="menu-btn" onclick="location.href='{{ url_for('calendar', username=current_user.username) }}'">
   {% else %}
     <button class="menu-btn" onclick="location.href='{{ url_for('login') }}'">
   {% endif %}

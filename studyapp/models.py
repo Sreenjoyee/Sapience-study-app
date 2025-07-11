@@ -1,4 +1,3 @@
-from datetime import datetime
 from studyapp import db, app, login_manager
 from flask_login import UserMixin
 

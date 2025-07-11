@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="box calendar-box-task">
+    <div class="month-header">
+        <p class="month-name" id="monthName">{{ date.strftime('%B %Y') }}</p>
+    </div>
+        <form class="calendar-todo" method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="day-task">
+            <label for="task">{{ date.day }}</label>
+            {{ form.notes(placeholder="Enter your schedule...") }}
+            {% for error in form.notes.errors %}
+                <span class="form-error">{{ error }}</span>
+            {% endfor %}
+            
+            </div>
+            <button class="add-todo-btn" type="submit">ADD</button>
+        </form>   
+    </div>
+    <button class="go-back" id="go_back" onclick="location.href='{{ url_for('calendar',username=current_user.username) }}'">GO BACK</button>
+ {% endblock %}

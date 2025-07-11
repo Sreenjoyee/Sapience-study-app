@@ -48,3 +48,6 @@ class TaskForm(FlaskForm):
 class ResourceForm(FlaskForm):
     title=StringField(validators=[DataRequired(),Length(min=1,max=200)])
     link = TextAreaField(validators=[DataRequired(), Length(max=2048), URL()])
+
+class ScheduleForm(FlaskForm):
+    notes = TextAreaField(validators=[DataRequired()])
