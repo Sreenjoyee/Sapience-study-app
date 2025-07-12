@@ -26,20 +26,27 @@
     <audio id="click-sound" src="{{ url_for('static', filename='sounds/click.wav') }}"></audio>
 
     <script>
-    const clickSound = document.getElementById("click-sound");
-    function playClickSound() {
-        clickSound.currentTime = 0;  
-        clickSound.play();
-    }
-    document.addEventListener("DOMContentLoaded", function () {
-        document.body.addEventListener("click", function (e) {
-        const isButtonOrLink = e.target.closest("button, a");
-        if (isButtonOrLink) {
-            playClickSound();
+    const clickSound = new Audio("/static/sounds/click.wav");
+
+   document.addEventListener("click", (e) => {
+    const isButton = e.target.closest("button");
+    const isLink = e.target.closest("a");
+    const isDay = e.target.closest(".day");
+
+    if (
+        (isDay && e.target === isDay) ||
+        isButton ||
+        isLink
+    ) {
+        const clickSound = document.getElementById("click-sound");
+        if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
         }
-        });
+    }
     });
     </script>
+
     <script>
     setTimeout(() => {
         const flash = document.querySelector('.flash-message');
