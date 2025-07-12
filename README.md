@@ -1,1 +1,2 @@
-work in progress study app
+website (deployed through render):
+https://sapience-study-app.onrender.com
