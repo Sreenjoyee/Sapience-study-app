@@ -19,6 +19,7 @@
         <button class="pause-btn" id="pauseBtn">PAUSE</button>
     </div>
     <button class="go-back" id="go_back" onclick="location.href='{{ url_for('home') }}'">GO BACK</button>
+    <audio id="beep-sound" src="{{ url_for('static', filename='sounds/alarm.wav') }}"></audio>
   {% endblock %}
 
   {% block scripts %}
@@ -35,15 +36,38 @@
     const workInput = document.getElementById("workTime");
     const breakInput = document.getElementById("breakTime");
 
+    function playBeep() {
+    const beep = document.getElementById("beep-sound");
+    beep.currentTime = 0; 
+    beep.play();
+    }
+
     function parseTime(str) {
-      const [m, s] = str.split(":").map(Number);
-      return m * 60 + (s || 0);
+      const parts = str.split(":").map(Number);
+
+      let h = 0, m = 0, s = 0;
+
+      if (parts.length === 3) {
+        [h, m, s] = parts;
+      } else if (parts.length === 2) {
+        [m, s] = parts;
+      } else if (parts.length === 1) {
+        [s] = parts;
+      }
+
+      return h * 3600 + m * 60 + s;
     }
 
     function formatTime(seconds) {
-      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const s = String(seconds % 60).padStart(2, '0');
-      return `${m}:${s}`;
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+
+      if (h > 0) {
+        return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      } else {
+        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      }
     }
 
     function updateDisplay() {
@@ -61,11 +85,20 @@
           clearInterval(timer);
           isRunning = false;
 
+           playBeep();
+
           if (isWork) {
             isWork = false;
-            currentTime = parseTime(breakInput.value);
+            setTimeout(() => {
+              currentTime = parseTime(breakInput.value);
+              updateDisplay();
+              startTimer();
+            },5000);
+          }
+          else {
+            isWork = true;
+            currentTime = parseTime(workInput.value);
             updateDisplay();
-            startTimer(); 
           }
         }
       }, 1000);
