@@ -1,9 +1,11 @@
 from flask import render_template,flash,redirect, request,abort,url_for
 from flask_login import login_user,current_user, logout_user, login_required
 from studyapp import app,db,bcrypt
-from studyapp.forms import RegistrationForm,LoginForm,TaskForm,ResourceForm,UpdateForm,ScheduleForm
+from studyapp.forms import RegistrationForm,LoginForm,TaskForm,ResourceForm,UpdateForm,ScheduleForm,RequestResetForm,ResetPasswordForm
 from studyapp.models import User,ToDo,Resource,Schedule
 from datetime import datetime
+import os
+import requests
 
 @app.route("/")
 @app.route("/home")
@@ -282,7 +284,7 @@ def update_schedule(schedule_id):
     elif request.method == 'GET':
         form.notes.data=schedule.notes 
 
-    return render_template('add_schedule.html',title='Update Schedule',date=schedule.date, form =form)
+    return render_template('add_schedule.html',title='Update Schedule',date=schedule.date,p='UPDATE SCHEDULE', form =form)
 
 @app.route("/calendar/<int:schedule_id>/delete",methods=['POST'])
 @login_required
@@ -294,3 +296,71 @@ def delete_schedule(schedule_id):
     db.session.commit()
     flash('The schedule has been deleted!', 'success')
     return redirect(url_for('calendar', username=current_user.username))
+
+#RESET PASSWORD
+def send_reset_email(user):
+    token = user.get_reset_token()
+    reset_url = url_for('reset_token', token=token, _external=True)
+
+    payload = {
+        "sender": {"name": "Sapience", "email": os.getenv("EMAIL_USER")},
+        "to": [{"email": user.email}],
+        "subject": "Reset Your Password",
+        "textContent": f"""To reset your password, click the link below:\n{reset_url}\n\nIf you didn't request this, ignore this email."""
+    }
+
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "api-key": os.getenv("BREVO_API_KEY")
+    }
+
+    response = requests.post("https://api.brevo.com/v3/smtp/email", 
+                             json=payload, headers=headers)
+
+    if response.status_code == 429:
+        flash("Email limit reached. Please try resetting your password tomorrow.", "info")
+        return False
+
+    if response.status_code != 201:
+        print("Brevo Error:", response.status_code, response.text)
+        flash("An error occurred while sending the email. Please try again later.", "info")
+        return False
+
+    return True
+
+
+@app.route('/reset_password',methods=['GET','POST'])  
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form= RequestResetForm()
+    if form.validate_on_submit():
+        user=User.query.filter_by(email=form.email.data).first()
+        success=send_reset_email(user)
+        if success:
+            flash("An email has been sent with instructions to reset your password.",'info')
+        return redirect(url_for('login'))
+
+    return render_template('reset_request.html', title='Reset Request', form=form)
+
+@app.route('/reset_password/<string:token>',methods=['GET','POST'])  
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    
+    user=User.verify_reset_token(token)
+
+    if user is None:
+        flash('That is an invalid or expired token', 'danger')
+        return redirect(url_for('reset_request'))
+    
+    form=ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password=bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.password=hashed_password
+        db.session.commit()
+        flash(f'Your password was reset succesfully!','success')
+        return redirect(url_for('login'))
+    return render_template('reset_token.html', title='Reset Password', form=form)
+    

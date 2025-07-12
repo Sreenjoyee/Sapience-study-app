@@ -1,4 +1,5 @@
 from studyapp import db, app, login_manager
+from itsdangerous import URLSafeTimedSerializer as Serializer 
 from flask_login import UserMixin
 
 @login_manager.user_loader
@@ -15,6 +16,19 @@ class User(db.Model,UserMixin):
     resources = db.relationship('Resource', backref='user', lazy=True)
     schedules = db.relationship('Schedule', backref='user', lazy=True)  
 
+    def get_reset_token(self):
+        s = Serializer(app.config['SECRET_KEY'])
+        return s.dumps({'user_id': self.id})
+
+    @staticmethod
+    def verify_reset_token(token, max_age=1800):
+        s = Serializer(app.config['SECRET_KEY'])  
+        try:
+            user_id = s.loads(token, max_age=max_age)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
+    
     def __repr__(self):  
         return f"User('{self.username}', '{self.email}')"  
     

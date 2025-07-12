@@ -14,5 +14,5 @@
       <button class="add-todo-btn" type="submit">ADD</button>
     </form>
   </div>
-  <button class="go-back" id="go_back" onclick="location.href='{{ url_for('to_do_list', username=current_user.username) }}'">GO BACK</button>
+  <button class="go-back" onclick="location.href='{{ url_for('to_do_list', username=current_user.username) }}'">GO BACK</button>
 {% endblock %}

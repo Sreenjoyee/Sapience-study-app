@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
+<p class="to-do-list-heading">{{p or 'NEW SCHEDULE'}}</p>
     <div class="box calendar-box-task">
     <div class="month-header">
-        <p class="month-name" id="monthName">{{ date.strftime('%B %Y') }}</p>
+        <p class="month-name">{{ date.strftime('%B %Y') }}</p>
     </div>
         <form class="calendar-todo" method="POST" novalidate>
             {{ form.hidden_tag() }}
@@ -17,5 +18,5 @@
             <button class="add-todo-btn" type="submit">ADD</button>
         </form>   
     </div>
-    <button class="go-back" id="go_back" onclick="location.href='{{ url_for('calendar',username=current_user.username) }}'">GO BACK</button>
+    <button class="go-back" onclick="location.href='{{ url_for('calendar',username=current_user.username) }}'">GO BACK</button>
  {% endblock %}

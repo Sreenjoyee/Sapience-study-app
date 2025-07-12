@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+<p class="to-do-list-heading">RESET PASSWORD</p>
+  <div>
+    <form class="card register-card reset-card" method="POST" novalidate>
+      {{ form.hidden_tag() }}
+
+      {{ form.password.label }}
+      {{ form.password(placeholder="Enter password", id="password") }}
+      {% for error in form.password.errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+
+      {{ form.confirm_password.label }}
+      {{ form.confirm_password(placeholder="Confirm password", id="confirm-password") }}
+      {% for error in form.confirm_password.errors %}
+          <span class="form-error">{{ error }}</span>
+      {% endfor %}
+
+      <button type="submit">RESET</button>
+    </form>
+  </div>
+{% endblock %}

@@ -232,11 +232,11 @@ body{
 a{
   text-decoration: none;
   cursor: pointer;
-  color: #d8a4f6FF;
+  color: rgb(233, 201, 250);
 }
 
 a:hover{
-  color: white;
+  color: rgb(255, 255, 255);
 }
 
 .card{
@@ -256,7 +256,6 @@ a:hover{
   height: 404px;
   
 }
-
 .register-card{
   width: 467px;
   height: 586px;
@@ -325,6 +324,12 @@ a:hover{
 .to-do-list-heading{
   background: #f0f6b5FF;
   color:black;
+  width:auto;
+  min-width: 191px;
+  padding: 10px;
+}
+.reset-card{
+  height:auto;
 }
 
 .add-todo-btn{
