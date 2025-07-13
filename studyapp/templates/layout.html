@@ -26,24 +26,18 @@
     <audio id="click-sound" src="{{ url_for('static', filename='sounds/click.wav') }}"></audio>
 
     <script>
-    const clickSound = new Audio("/static/sounds/click.wav");
+    const clickSound = document.getElementById("click-sound");
 
-   document.addEventListener("click", (e) => {
-    const isButton = e.target.closest("button");
-    const isLink = e.target.closest("a");
-    const isDay = e.target.closest(".day");
-
-    if (
-        (isDay && e.target === isDay) ||
-        isButton ||
-        isLink
-    ) {
-        const clickSound = document.getElementById("click-sound");
+    document.addEventListener("click", (e) => {
+        const isButton = e.target.closest("button");
+        const isLink = e.target.closest("a");
+        
+        if (isButton || isLink) {
         if (clickSound) {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(() => {});
+            clickSound.currentTime = 0;
+            clickSound.play().catch(() => {});
         }
-    }
+        }
     });
     </script>
 

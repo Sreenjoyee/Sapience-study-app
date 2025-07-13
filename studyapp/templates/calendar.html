@@ -51,14 +51,15 @@
           return d.getFullYear() === year && d.getMonth() === month && d.getDate() === dayCount;
         });
 
-        const dayDiv = document.createElement("div");
-        dayDiv.className = "day";
+        const dayButton = document.createElement("button");
+        dayButton.className = "day";
+        dayButton.type = "button";
 
         if (scheduled) {
-          dayDiv.onclick = () => location.href = `/calendar/${scheduled.id}`;
-          dayDiv.classList.add("has-task");
+          dayButton.onclick = () => location.href = `/calendar/${scheduled.id}`;
+          dayButton.classList.add("has-task");
         } else {
-          dayDiv.onclick = () => location.href = `/calendar/new/${dateStr}`;
+          dayButton.onclick = () => location.href = `/calendar/new/${dateStr}`;
         }
 
         const label = document.createElement("label");
@@ -70,9 +71,9 @@
         input.id = `task${dayCount}`;
         input.readOnly = true;
 
-        dayDiv.appendChild(label);
-        dayDiv.appendChild(input);
-        weekDiv.appendChild(dayDiv);
+        dayButton.appendChild(label);
+        dayButton.appendChild(input);
+        weekDiv.appendChild(dayButton);
       }
 
       calendarGrid.appendChild(weekDiv);
