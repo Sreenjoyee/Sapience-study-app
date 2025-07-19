@@ -54,11 +54,11 @@
         const dayButton = document.createElement("button");
         dayButton.className = "day";
         dayButton.type = "button";
-
+        const today = new Date();
         if (
-          year === currentDate.getFullYear() &&
-          month === currentDate.getMonth() &&
-          dayCount === currentDate.getDate()
+          year === today.getFullYear() &&
+          month === today.getMonth() &&
+          dayCount === today.getDate()
         ) {
           dayButton.classList.add("today");
         }
