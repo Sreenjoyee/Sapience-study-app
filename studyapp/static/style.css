@@ -73,7 +73,7 @@ body{
   flex-direction:column;
   align-items:center;
   border: none;
-  border-radius: 30px;
+  border-radius: 15px;
   background-color: #d8aaff;
   margin: 20px 20px 20px 20px;
 }
@@ -105,6 +105,13 @@ body{
 .day.has-task label{
   background: hsl(302, 82%, 50%);
 }
+.day.today{
+  border: 3px solid red;
+  width: 102px;
+  height:71px;
+  border-radius: 16px;
+}
+
 .day label{
   display: block;
   width: 97px;
@@ -130,7 +137,6 @@ body{
   cursor: pointer;
 }
 
-
 .view-schedule-label,.resource-title,.day-task label{
   width: 334px;
   height: 54px;
@@ -141,6 +147,7 @@ body{
   transform: scale(1.05);
   filter: brightness(85%);
 }
+
 
 .view-schedule-notes,.resource-link,.day-task textarea{
   width: 334px;

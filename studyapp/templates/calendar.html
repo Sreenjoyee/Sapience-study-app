@@ -55,12 +55,21 @@
         dayButton.className = "day";
         dayButton.type = "button";
 
+        if (
+          year === currentDate.getFullYear() &&
+          month === currentDate.getMonth() &&
+          dayCount === currentDate.getDate()
+        ) {
+          dayButton.classList.add("today");
+        }
+
         if (scheduled) {
           dayButton.onclick = () => location.href = `/calendar/${scheduled.id}`;
           dayButton.classList.add("has-task");
         } else {
           dayButton.onclick = () => location.href = `/calendar/new/${dateStr}`;
         }
+        
 
         const label = document.createElement("label");
         label.htmlFor = `task${dayCount}`;
