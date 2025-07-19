@@ -278,6 +278,7 @@ def update_schedule(schedule_id):
     form = ScheduleForm()
     if form.validate_on_submit():
         schedule.notes = form.notes.data
+        db.session.commit()
         flash('Schedule updated!', 'success')
         return redirect(url_for('calendar', username=current_user.username))
     
