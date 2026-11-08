@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='planner.css') }}">
+{% endblock %}
+
+{% block body_class %}sp-body{% endblock %}
+
+{% block content %}
+<div class="sp-page">
+  <h1 class="sp-title">STUDY TUTOR</h1>
+  <p class="sp-subtitle">upload your notes or slides → ask doubts → quiz yourself</p>
+
+  <nav class="sp-tabs">
+    <a class="sp-tab" href="{{ url_for('planner') }}">Planner</a>
+    <a class="sp-tab is-active" href="{{ url_for('tutor_page') }}">Tutor &amp; Quiz</a>
+  </nav>
+
+  <!-- Upload material -->
+  <section id="uploadPanel" class="sp-card">
+    <h2 class="sp-heading">YOUR NOTES</h2>
+    <p class="sp-hint">PDF, PPTX or TXT. The tutor only answers from what you upload here.</p>
+    <div class="sp-slot">
+      <label class="sp-drop" id="materialsDrop">
+        <input type="file" id="materials" accept=".pdf,.pptx,.txt" multiple>
+        <span class="sp-drop-icon" aria-hidden="true">📚</span>
+        <span class="sp-drop-text" data-empty="tap or drop one or more files">tap or drop one or more files</span>
+        <button type="button" id="materialsRemove" class="sp-remove sp-hidden">clear ✕</button>
+      </label>
+    </div>
+    <div class="sp-actions" style="margin-top:22px">
+      <button id="analyzeBtn" class="sp-btn">READ MY NOTES →</button>
+    </div>
+    <div id="uploadStatus" class="sp-status" role="status"></div>
+  </section>
+
+  <!-- Material loaded -->
+  <section id="materialPanel" class="sp-card sp-hidden">
+    <div class="sp-card-head">
+      <h2 class="sp-heading purple">LOADED</h2>
+      <button id="changeMaterialBtn" class="sp-btn white">CHANGE NOTES</button>
+    </div>
+    <div id="materialFiles" class="sp-file-chips"></div>
+  </section>
+
+  <section id="chatPanel" class="sp-card sp-hidden">
+    <h2 class="sp-heading pink">ASK A DOUBT</h2>
+    <p class="sp-hint">Answers come only from your uploaded notes.</p>
+    <div id="chatLog" class="sp-chat"></div>
+    <div class="sp-chat-row">
+      <input type="text" id="chatInput" class="sp-input" placeholder="e.g. explain the second law in simple words" autocomplete="off">
+      <button id="chatSendBtn" class="sp-btn">SEND</button>
+    </div>
+    <div id="chatStatus" class="sp-status" role="status"></div>
+  </section>
+
+  <section id="quizPanel" class="sp-card sp-hidden">
+    <h2 class="sp-heading magenta">QUIZ ME</h2>
+    <div class="sp-quiz-controls" style="margin-top:16px">
+      <label for="quizCount"><b id="quizCountLabel">5</b> questions</label>
+      <input type="range" id="quizCount" class="sp-range" min="3" max="10" value="5">
+      <button id="quizBtn" class="sp-btn">MAKE QUIZ</button>
+    </div>
+    <div id="quizStatus" class="sp-status" role="status"></div>
+    <div id="quizContainer"></div>
+    <div id="quizScore" class="sp-score sp-hidden"></div>
+  </section>
+
+  <button class="go-back" data-href="{{ url_for('home') }}" onclick="location.href=this.dataset.href">GO BACK</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.TUTOR_URLS = {
+    upload: "{{ url_for('tutor_upload') }}",
+    clear: "{{ url_for('tutor_clear') }}",
+    chat: "{{ url_for('tutor_chat') }}",
+    quiz: "{{ url_for('tutor_quiz') }}",
+    state: "{{ url_for('tutor_state') }}"
+  };
+</script>
+<script src="{{ url_for('static', filename='tutor.js') }}"></script>
+{% endblock %}

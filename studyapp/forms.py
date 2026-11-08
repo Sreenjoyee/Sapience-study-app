@@ -42,9 +42,6 @@ class UpdateForm(FlaskForm):
             if user:
                 raise ValidationError('This email already has an account')
 
-class TaskForm(FlaskForm):
-    task=StringField(validators=[DataRequired(),Length(min=1,max=200)])
-
 class ResourceForm(FlaskForm):
     title=StringField(validators=[DataRequired(),Length(min=1,max=200)])
     link = TextAreaField(validators=[DataRequired(), Length(max=2048), URL()])

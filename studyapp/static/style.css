@@ -5,7 +5,7 @@
 }
 
 body{
-  background-color: #a23ddc;
+  background-color: #9a65d0;
   font-family: "Sue Ellen Francisco", cursive;
   font-size: 20px;
   height: 100vh;
@@ -158,6 +158,10 @@ body{
   resize: none;
 }
 
+.view-schedule-notes{
+  white-space: pre-line;
+}
+
 .start-btn,.pause-btn,.reset-btn,.pomodromo-header,.resource-heading,.to-do-list-heading,.go-back,.month-name{
   width: 191px;
   height: 55px;
@@ -232,7 +236,7 @@ body{
 }
 
 .sign-up{
-  color: rgb(0, 0, 0);
+  color: #fff;
   margin-bottom: 23px;
   line-height: 1.2;
   letter-spacing: 5;

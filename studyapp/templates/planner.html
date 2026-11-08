@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='planner.css') }}">
+{% endblock %}
+
+{% block body_class %}sp-body{% endblock %}
+
+{% block content %}
+<div class="sp-page">
+  <h1 class="sp-title">STUDY PLANNER</h1>
+  <p class="sp-subtitle">drop your syllabus &amp; datesheet → rate each topic → get a day-by-day plan</p>
+
+  <nav class="sp-tabs">
+    <a class="sp-tab is-active" href="{{ url_for('planner') }}">Planner</a>
+    <a class="sp-tab" href="{{ url_for('tutor_page') }}">Tutor &amp; Quiz</a>
+  </nav>
+
+  <ol class="sp-steps" aria-label="Progress">
+    <li class="sp-step is-active" data-step="1"><span class="sp-step-dot">1</span><span class="sp-step-label">upload</span></li>
+    <li class="sp-step-line" aria-hidden="true"></li>
+    <li class="sp-step" data-step="2"><span class="sp-step-dot">2</span><span class="sp-step-label">rate topics</span></li>
+    <li class="sp-step-line" aria-hidden="true"></li>
+    <li class="sp-step" data-step="3"><span class="sp-step-dot">3</span><span class="sp-step-label">settings</span></li>
+    <li class="sp-step-line" aria-hidden="true"></li>
+    <li class="sp-step" data-step="4"><span class="sp-step-dot">4</span><span class="sp-step-label">plan</span></li>
+  </ol>
+
+  <!-- STEP 1: Upload -->
+  <section id="step1" class="sp-card">
+    <h2 class="sp-heading">UPLOAD</h2>
+    <div class="sp-slots">
+      <div class="sp-slot">
+        <span class="sp-slot-label">Syllabus PDF <small>(required)</small></span>
+        <label class="sp-drop" id="syllabusDrop">
+          <input type="file" id="syllabus" accept="application/pdf">
+          <span class="sp-drop-icon" aria-hidden="true">📄</span>
+          <span class="sp-drop-text" data-empty="tap or drop a PDF">tap or drop a PDF</span>
+          <button type="button" class="sp-remove sp-hidden" id="syllabusRemove">remove ✕</button>
+        </label>
+      </div>
+      <div class="sp-slot alt">
+        <span class="sp-slot-label">Datesheet PDF <small>(optional)</small></span>
+        <label class="sp-drop" id="datesheetDrop">
+          <input type="file" id="datesheet" accept="application/pdf">
+          <span class="sp-drop-icon" aria-hidden="true">🗓️</span>
+          <span class="sp-drop-text" data-empty="tap or drop a PDF">tap or drop a PDF</span>
+          <button type="button" class="sp-remove sp-hidden" id="datesheetRemove">remove ✕</button>
+        </label>
+      </div>
+    </div>
+    <div class="sp-actions">
+      <button id="extractBtn" class="sp-btn">FIND MY TOPICS →</button>
+    </div>
+    <div id="extractStatus" class="sp-status" role="status"></div>
+  </section>
+
+  <!-- STEP 2: Rate topics -->
+  <section id="step2" class="sp-card sp-hidden">
+    <h2 class="sp-heading pink">RATE YOUR TOPICS</h2>
+    <p class="sp-hint">How confident are you with each one? Weak topics get more hours and earlier slots.</p>
+    <div class="sp-legend">
+      <span><span class="sp-tag weak">WEAK</span> 2.2 h</span>
+      <span><span class="sp-tag medium">MEDIUM</span> 1.5 h</span>
+      <span><span class="sp-tag strong">STRONG</span> 0.8 h</span>
+    </div>
+    <div id="subjectsContainer"></div>
+    <div class="sp-actions">
+      <button id="backTo1" class="sp-btn white">← BACK</button>
+      <button id="toSettings" class="sp-btn">CONTINUE →</button>
+    </div>
+  </section>
+
+  <!-- STEP 3: Settings -->
+  <section id="step3" class="sp-card sp-hidden">
+    <h2 class="sp-heading magenta">SETTINGS</h2>
+    <div class="sp-dials">
+      <label class="sp-dial">
+        start from
+        <input type="date" id="startDate" class="sp-date">
+      </label>
+      <div class="sp-dial">
+        <div class="sp-dial-face"><div class="sp-dial-inner"><b id="hoursLabel">4</b><span>hours / day</span></div></div>
+        <input type="range" id="maxHours" class="sp-range" min="1" max="12" value="4" aria-label="Max study hours per day">
+      </div>
+      <div class="sp-dial">
+        <div class="sp-dial-face"><div class="sp-dial-inner"><b id="prepLabel">1</b><span>revision days</span></div></div>
+        <input type="range" id="prepDays" class="sp-range" min="0" max="5" value="1" aria-label="Revision days before each exam">
+      </div>
+    </div>
+    <div class="sp-actions">
+      <button id="backTo2" class="sp-btn white">← BACK</button>
+      <button id="generateBtn" class="sp-btn">MAKE MY PLAN →</button>
+    </div>
+    <div id="planStatus" class="sp-status" role="status"></div>
+  </section>
+
+  <!-- STEP 4: Plan -->
+  <section id="step4" class="sp-card sp-hidden">
+    <div class="sp-card-head">
+      <h2 class="sp-heading purple">YOUR PLAN</h2>
+      <div class="sp-actions">
+        <button id="calendarBtn" class="sp-btn magenta">ADD TO CALENDAR</button>
+        <button id="downloadBtn" class="sp-btn blue">PDF ⬇</button>
+      </div>
+    </div>
+    <div id="planSummary" class="sp-plan-summary"></div>
+    <div id="planContainer"></div>
+    <div id="calendarStatus" class="sp-status" role="status"></div>
+    <div class="sp-actions">
+      <button id="restartBtn" class="sp-btn purple">START OVER</button>
+    </div>
+  </section>
+
+  <button class="go-back" data-href="{{ url_for('home') }}" onclick="location.href=this.dataset.href">GO BACK</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.PLANNER_URLS = {
+    extract: "{{ url_for('extract') }}",
+    plan: "{{ url_for('plan') }}",
+    download: "{{ url_for('download') }}",
+    toCalendar: "{{ url_for('plan_to_calendar') }}",
+    calendar: "{{ url_for('calendar', username=current_user.username) }}"
+  };
+</script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}

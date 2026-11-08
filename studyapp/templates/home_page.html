@@ -1,28 +1,24 @@
 {% extends "layout.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='planner.css') }}">
+{% endblock %}
 {% block content %}
   <div class="box home-page-menu">
   {% if current_user.is_authenticated %}
-    <button class="menu-btn" onclick="location.href='{{ url_for('to_do_list', username=current_user.username) }}'">
+    <button class="menu-btn" data-href="{{ url_for('planner') }}" onclick="location.href=this.dataset.href">
   {% else %}
-    <button class="menu-btn" onclick="location.href='{{ url_for('login') }}'">
+    <button class="menu-btn" data-href="{{ url_for('login') }}" onclick="location.href=this.dataset.href">
   {% endif %}
-    <p>TO DO LIST</p>
-    <div class="todo-icon-outer">
-    <div class="todo-icon">
-      <div class="todo-line">
-        <span class="dot"></span>
-        <div class="line"></div>
-      </div>
-      <div class="todo-line">
-        <span class="dot"></span>
-        <div class="line"></div>
-      </div>
-      <div class="todo-line">
-        <span class="dot"></span>
-        <div class="line"></div>
+    <p>STUDY PLANNER</p>
+    <div class="planner-icon-outer">
+      <div class="planner-rings"><span></span><span></span><span></span></div>
+      <div class="planner-icon">
+        <div class="planner-bar weak"></div>
+        <div class="planner-bar medium"></div>
+        <div class="planner-bar strong"></div>
+        <div class="planner-bar weak short"></div>
       </div>
     </div>
-    <div>
   </button>
 
   {% if current_user.is_authenticated %}
