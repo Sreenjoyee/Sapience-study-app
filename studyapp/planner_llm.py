@@ -15,7 +15,8 @@ from google.genai import types
 from studyapp import app, db
 from studyapp.models import Schedule
 
-MODEL = "gemini-flash-latest"
+# Override with the GEMINI_MODEL env var (e.g. on Render) without a code change.
+MODEL = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
 
 DIFFICULTY_WEIGHT = {"weak": 1.5, "medium": 1.0, "strong": 0.5}
 
@@ -27,7 +28,12 @@ def get_client():
     when GEMINI_API_KEY isn't set."""
     global _client
     if _client is None:
-        _client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+        # Pin the API version: "-latest" model aliases only exist on v1beta, and
+        # newer SDK releases may default to v1.
+        _client = genai.Client(
+            api_key=os.getenv("GEMINI_API_KEY"),
+            http_options=types.HttpOptions(api_version="v1beta"),
+        )
     return _client
 
 
