@@ -74,15 +74,23 @@ MATERIAL_EXTRACTORS = {
     ".txt": extract_txt_text,
 }
 
-# In-memory tutor sessions, one per logged-in user (cleared on server restart).
-TUTOR_STATES = {}
+# The tutor keeps no server-side state: /tutor/upload returns the extracted text,
+# the browser holds it, and sends it back with every chat/quiz request. That way a
+# worker restart, a Render sleep, or multiple gunicorn workers can't lose it.
 MATERIAL_CHAR_LIMIT = 40000
+CHAT_HISTORY_TURNS = 20
 
 
-def get_tutor_state():
-    return TUTOR_STATES.setdefault(
-        current_user.id, {"material_text": "", "files": [], "chat_history": []}
-    )
+def clean_history(history):
+    """Keep only well-formed {role, text} turns from the client."""
+    turns = []
+    for turn in history if isinstance(history, list) else []:
+        if not isinstance(turn, dict):
+            continue
+        role, text = turn.get("role"), turn.get("text")
+        if role in ("user", "model") and isinstance(text, str) and text.strip():
+            turns.append({"role": role, "text": text[:4000]})
+    return turns[-CHAT_HISTORY_TURNS:]
 
 
 # ---------- LLM extraction ----------
@@ -146,13 +154,13 @@ ___MATERIAL___
 """
 
 
-def tutor_chat_reply(state, message):
+def tutor_chat_reply(material, history, message):
     system_instruction = TUTOR_SYSTEM_INSTRUCTION.replace(
-        "___MATERIAL___", state["material_text"][:MATERIAL_CHAR_LIMIT]
+        "___MATERIAL___", material[:MATERIAL_CHAR_LIMIT]
     )
     contents = [
         {"role": turn["role"], "parts": [{"text": turn["text"]}]}
-        for turn in state["chat_history"][-20:]
+        for turn in history
     ]
     contents.append({"role": "user", "parts": [{"text": message}]})
 
@@ -190,9 +198,9 @@ ___MATERIAL___
 """
 
 
-def llm_generate_quiz(state, num_questions):
+def llm_generate_quiz(material, num_questions):
     prompt = QUIZ_PROMPT.replace("___N___", str(num_questions)).replace(
-        "___MATERIAL___", state["material_text"][:MATERIAL_CHAR_LIMIT]
+        "___MATERIAL___", material[:MATERIAL_CHAR_LIMIT]
     )
     response = get_client().models.generate_content(model=MODEL, contents=prompt)
     raw = response.text.strip().replace("```json", "").replace("```", "").strip()
@@ -317,13 +325,6 @@ def tutor_page():
     return render_template("tutor.html", title="Study Tutor")
 
 
-@app.route("/tutor/state")
-@login_required
-def tutor_state():
-    state = get_tutor_state()
-    return jsonify({"files": state["files"], "chat_history": state["chat_history"]})
-
-
 @app.route("/tutor/upload", methods=["POST"])
 @login_required
 def tutor_upload():
@@ -351,56 +352,57 @@ def tutor_upload():
     if not texts:
         return jsonify({"error": "Couldn't extract any text from those files"}), 400
 
-    state = get_tutor_state()
-    state["material_text"] = "\n\n".join(texts)
-    state["files"] = names
-    state["chat_history"] = []
+    material = "\n\n".join(texts)
+    return jsonify({
+        "files": names,
+        "skipped": skipped,
+        "chars": len(material),
+        "truncated": len(material) > MATERIAL_CHAR_LIMIT,
+        "material": material[:MATERIAL_CHAR_LIMIT],
+    })
 
-    return jsonify({"files": names, "skipped": skipped, "chars": len(state["material_text"])})
 
-
-@app.route("/tutor/clear", methods=["POST"])
-@login_required
-def tutor_clear():
-    get_tutor_state().update(material_text="", files=[], chat_history=[])
-    return jsonify({"ok": True})
+def material_from(payload):
+    material = payload.get("material")
+    return material[:MATERIAL_CHAR_LIMIT] if isinstance(material, str) else ""
 
 
 @app.route("/tutor/chat", methods=["POST"])
 @login_required
 def tutor_chat():
-    payload = request.get_json() or {}
+    payload = request.get_json(silent=True) or {}
     message = (payload.get("message") or "").strip()
     if not message:
         return jsonify({"error": "Message is required"}), 400
 
-    state = get_tutor_state()
-    if not state["material_text"]:
+    material = material_from(payload)
+    if not material.strip():
         return jsonify({"error": "Upload study material first"}), 400
 
     try:
-        answer = tutor_chat_reply(state, message)
+        answer = tutor_chat_reply(material, clean_history(payload.get("history")), message)
     except Exception as e:
         return jsonify({"error": f"Chat failed: {e}"}), 500
 
-    state["chat_history"].append({"role": "user", "text": message})
-    state["chat_history"].append({"role": "model", "text": answer})
     return jsonify({"answer": answer})
 
 
 @app.route("/tutor/quiz", methods=["POST"])
 @login_required
 def tutor_quiz():
-    state = get_tutor_state()
-    if not state["material_text"]:
+    payload = request.get_json(silent=True) or {}
+    material = material_from(payload)
+    if not material.strip():
         return jsonify({"error": "Upload study material first"}), 400
 
-    payload = request.get_json(silent=True) or {}
-    num_questions = int(payload.get("num_questions", 5))
+    try:
+        num_questions = int(payload.get("num_questions", 5))
+    except (TypeError, ValueError):
+        num_questions = 5
     num_questions = max(3, min(num_questions, 10))
 
     try:
-        data = llm_generate_quiz(state, num_questions)
+        data = llm_generate_quiz(material, num_questions)
     except Exception as e:
         return jsonify({"error": f"Quiz generation failed: {e}"}), 500
 

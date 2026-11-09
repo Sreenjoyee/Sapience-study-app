@@ -74,10 +74,8 @@
 <script>
   window.TUTOR_URLS = {
     upload: "{{ url_for('tutor_upload') }}",
-    clear: "{{ url_for('tutor_clear') }}",
     chat: "{{ url_for('tutor_chat') }}",
-    quiz: "{{ url_for('tutor_quiz') }}",
-    state: "{{ url_for('tutor_state') }}"
+    quiz: "{{ url_for('tutor_quiz') }}"
   };
 </script>
 <script src="{{ url_for('static', filename='tutor.js') }}"></script>

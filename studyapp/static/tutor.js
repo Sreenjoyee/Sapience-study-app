@@ -1,6 +1,27 @@
 const URLS = window.TUTOR_URLS;
 const $ = (id) => document.getElementById(id);
 
+// The server keeps nothing between requests: the extracted notes and the chat
+// live here and are sent along with every question / quiz request.
+// sessionStorage keeps them across a page reload in this tab.
+const STORE_KEY = "sapience-tutor";
+let session = { files: [], material: "", history: [] };
+
+function saveSession() {
+  try { sessionStorage.setItem(STORE_KEY, JSON.stringify(session)); } catch (_) { /* storage off/full */ }
+}
+function loadSession() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem(STORE_KEY) || "null");
+    if (s && typeof s.material === "string" && Array.isArray(s.files) && Array.isArray(s.history)) return s;
+  } catch (_) { /* ignore */ }
+  return null;
+}
+function clearSession() {
+  session = { files: [], material: "", history: [] };
+  try { sessionStorage.removeItem(STORE_KEY); } catch (_) { /* ignore */ }
+}
+
 function escapeHtml(s) {
   const div = document.createElement("div");
   div.textContent = s == null ? "" : String(s);
@@ -10,6 +31,24 @@ function escapeHtml(s) {
 function setStatus(el, msg, { error = false, busy = false } = {}) {
   el.className = "sp-status" + (error ? " is-error" : "");
   el.innerHTML = (busy ? '<span class="sp-spinner"></span>' : "") + escapeHtml(msg);
+}
+
+// Errors from Render/gunicorn (timeouts, restarts) come back as HTML pages, not JSON.
+async function postJson(url, body) {
+  const res = await fetch(url, body instanceof FormData
+    ? { method: "POST", body }
+    : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  let data = null;
+  try { data = await res.json(); } catch (_) { /* not JSON */ }
+  if (!data) {
+    if (res.redirected || res.status === 401) throw new Error("You've been logged out. Please log in again.");
+    if ([502, 503, 504].includes(res.status) || res.status === 0) {
+      throw new Error("The server took too long (the AI may be busy). Please try again.");
+    }
+    throw new Error(`Server error (${res.status}). Please try again.`);
+  }
+  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  return data;
 }
 
 // ---- Upload slot ----
@@ -35,8 +74,11 @@ $("materialsRemove").addEventListener("click", (e) => {
 ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.add("is-over")));
 ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove("is-over")));
 
-function showLoaded(files, skipped) {
+function showLoaded(files, skipped, truncated) {
   let html = files.map((f) => `<span class="sp-file-chip">📄 ${escapeHtml(f)}</span>`).join("");
+  if (truncated) {
+    html += `<p class="sp-hint" style="width:100%">Your notes are long, so the tutor only uses roughly the first 40,000 characters.</p>`;
+  }
   if (skipped && skipped.length) {
     html += `<p class="sp-hint" style="width:100%">Skipped (unsupported or empty): ${skipped.map(escapeHtml).join(", ")}</p>`;
   }
@@ -66,13 +108,13 @@ $("analyzeBtn").addEventListener("click", async () => {
   $("analyzeBtn").disabled = true;
 
   try {
-    const res = await fetch(URLS.upload, { method: "POST", body: fd });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Upload failed");
+    const data = await postJson(URLS.upload, fd);
+    session = { files: data.files, material: data.material, history: [], truncated: !!data.truncated };
+    saveSession();
     resetChat();
     resetQuiz();
     setStatus(status, "");
-    showLoaded(data.files, data.skipped);
+    showLoaded(data.files, data.skipped, data.truncated);
   } catch (e) {
     setStatus(status, e.message, { error: true });
   } finally {
@@ -80,8 +122,8 @@ $("analyzeBtn").addEventListener("click", async () => {
   }
 });
 
-$("changeMaterialBtn").addEventListener("click", async () => {
-  await fetch(URLS.clear, { method: "POST" });
+$("changeMaterialBtn").addEventListener("click", () => {
+  clearSession();
   $("materials").value = "";
   refreshSlot();
   setStatus($("uploadStatus"), "");
@@ -112,7 +154,7 @@ async function sendChat() {
   if (!message) return;
   const status = $("chatStatus");
 
-  addBubble("user", message);
+  const userBubble = addBubble("user", message);
   input.value = "";
   input.disabled = true;
   $("chatSendBtn").disabled = true;
@@ -120,16 +162,18 @@ async function sendChat() {
   setStatus(status, "");
 
   try {
-    const res = await fetch(URLS.chat, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
+    const data = await postJson(URLS.chat, {
+      message,
+      material: session.material,
+      history: session.history.slice(-20),
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Chat failed");
     thinking.textContent = data.answer;
+    session.history.push({ role: "user", text: message }, { role: "model", text: data.answer });
+    saveSession();
   } catch (e) {
     thinking.remove();
+    userBubble.remove();
+    input.value = message; // let them resend without retyping
     setStatus(status, e.message, { error: true });
   } finally {
     input.disabled = false;
@@ -164,13 +208,10 @@ $("quizBtn").addEventListener("click", async () => {
   $("quizBtn").disabled = true;
 
   try {
-    const res = await fetch(URLS.quiz, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ num_questions: parseInt($("quizCount").value, 10) }),
+    const data = await postJson(URLS.quiz, {
+      num_questions: parseInt($("quizCount").value, 10),
+      material: session.material,
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Quiz generation failed");
     renderQuiz(data.questions || []);
     setStatus(status, "");
   } catch (e) {
@@ -200,7 +241,7 @@ function renderQuiz(questions) {
       <div class="sp-quiz-explain sp-hidden"></div>`;
 
     const opts = card.querySelector(".sp-quiz-opts");
-    q.options.forEach((opt, oi) => {
+    (q.options || []).forEach((opt, oi) => {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "sp-quiz-opt";
@@ -227,16 +268,11 @@ function renderQuiz(questions) {
   });
 }
 
-// ---- Restore this user's session (notes + chat survive a page reload) ----
-(async () => {
-  try {
-    const res = await fetch(URLS.state);
-    if (!res.ok) return;
-    const data = await res.json();
-    if (!data.files || !data.files.length) return;
-    showLoaded(data.files, []);
-    (data.chat_history || []).forEach((t) => addBubble(t.role, t.text));
-  } catch (_) {
-    /* stay on the upload panel */
-  }
+// ---- Restore notes + chat after a reload in this tab ----
+(() => {
+  const saved = loadSession();
+  if (!saved || !saved.material) return;
+  session = saved;
+  showLoaded(session.files, [], session.truncated);
+  session.history.forEach((t) => addBubble(t.role, t.text));
 })();
